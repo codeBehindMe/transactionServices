@@ -28,7 +28,7 @@ steps:
       - functions
       - deploy
       - GetTransaction
-      - -- runtime go111
+      - --runtime go111
       - --trigger-http
       - --memory 128MB
       - --timeout 10s
