@@ -28,8 +28,9 @@ steps:
       - functions
       - deploy
       - GetTransaction
-      - --runtime go111
+      - --source=.
+      - --runtime=go111
       - --trigger-http
-      - --memory 128MB
-      - --timeout 10s
-      - --max-instances 1
+      - --memory=128MB
+      - --timeout=10s
+      - --max-instances=1
