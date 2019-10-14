@@ -31,6 +31,5 @@ steps:
       - -- runtime go111
       - --trigger-http
       - --memory 128MB
-      - --service-account ${_CF_SERVICE_ACC}
       - --timeout 10s
       - --max-instances 1
