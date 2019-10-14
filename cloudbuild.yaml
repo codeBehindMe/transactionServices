@@ -34,3 +34,4 @@ steps:
       - --memory=128MB
       - --timeout=10s
       - --max-instances=1
+      - --region=asia-east2
