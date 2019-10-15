@@ -23,7 +23,7 @@
 
 steps:
   - name: 'gcr.io/cloud-builders/gcloud'
-    id: 'Deploy'
+    id: 'Deploy Get Transaction'
     args:
       - functions
       - deploy
