@@ -43,6 +43,7 @@ type Transaction struct {
 	Amount        string
 	NumericAmount float32
 	NotifiedTime  time.Time
+	UnixEpoch     int64
 }
 
 var ctx = context.Background()
@@ -107,6 +108,7 @@ func CreateTransactionFromAnalyseEntitiesResponse(
 	}
 
 	transaction.NotifiedTime = time.Now()
+	transaction.UnixEpoch = transaction.NotifiedTime.Unix()
 
 	return transaction
 }
