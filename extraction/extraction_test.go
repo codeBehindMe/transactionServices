@@ -31,6 +31,7 @@ package extraction
 
 import (
 	"bytes"
+	"encoding/json"
 	"fmt"
 	"io"
 	"net/http"
@@ -100,7 +101,7 @@ func TestCreateTransactionFromAnalyseEntitiesResponse(t *testing.T) {
 			targetTx.Location, outputTx.Location)
 	}
 
-	if outputTx.Amount != targetTx.Amount{
+	if outputTx.Amount != targetTx.Amount {
 		t.Errorf("Incorrect amount in transaction. Expected \n %v found \n %v",
 			targetTx.Amount, outputTx.Amount)
 	}
@@ -109,4 +110,45 @@ func TestCreateTransactionFromAnalyseEntitiesResponse(t *testing.T) {
 		t.Errorf("Incorrect NumericAmount in transaction. Expected \n %v found \n %v",
 			targetTx.NumericAmount, outputTx.NumericAmount)
 	}
+}
+
+func TestGetTransactionFromFromHttpRequest(t *testing.T) {
+	ntfTime := time.Now()
+	tx := Transaction{
+		Location:      "home",
+		Amount:        "$10.00",
+		NumericAmount: 10,
+		NotifiedTime:  ntfTime,
+		UnixEpoch:     ntfTime.Unix(),
+	}
+
+	// When you Jsonise only the wall clock time is kept, so need to get rid of it in the original transaction so the
+	// returned result once it comes back through http request is the same.
+	// Comment this line out to see what happens.
+	// FIXME: Is there a cleaner way to do this?
+	tx.NotifiedTime = tx.NotifiedTime.Round(0)
+	jsonPayload, err := json.Marshal(&tx)
+
+	if err != nil {
+		t.Fatalf("Failed test with error: %v", err)
+	}
+
+	req, err := http.NewRequest("POST", "/txdecode", bytes.NewBuffer(jsonPayload))
+
+	if err != nil {
+		t.Fatalf("Failed test error: %v", err)
+	}
+
+	req.Header.Set("Content-Type", "application/json")
+
+	tDecodeHandler := func(w http.ResponseWriter, r *http.Request) {
+		txOutput := GetTransactionFromFromHttpRequest(r)
+
+		if txOutput != tx {
+			t.Errorf("Expected: %v \n :got: %v", tx, txOutput)
+		}
+	}
+
+	handler := http.HandlerFunc(tDecodeHandler)
+	handler.ServeHTTP(nil, req)
 }
