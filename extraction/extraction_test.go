@@ -40,6 +40,20 @@ import (
 	"time"
 )
 
+func TestNewTransaction(t *testing.T) {
+	tx := NewTransaction("Home","$2.20")
+
+	if tx.Location != "Home"{
+		t.Errorf("Incorrect location")
+	}
+	if tx.Amount != "$2.20"{
+		t.Errorf("Incorrect Amount")
+	}
+	if tx.NumericAmount != 2.2{
+		t.Errorf("Incorrect Numeric Aount")
+	}
+}
+
 func TestCloudNLP(t *testing.T) {
 	testText := "You spend $10 at home"
 	AEResponse, err := AnalyseEntitiesInText(&testText)

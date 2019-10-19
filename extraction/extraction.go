@@ -31,6 +31,7 @@ import (
 	"log"
 	"net/http"
 	"strconv"
+	"strings"
 	"time"
 )
 
@@ -44,6 +45,24 @@ type Transaction struct {
 	NumericAmount float32
 	NotifiedTime  time.Time
 	UnixEpoch     int64
+}
+
+func NewTransaction(location, dollarAmount string) Transaction {
+	// FIXME: Design needs to be revised.
+	amount, _ := strconv.ParseFloat(strings.Trim(dollarAmount, "$"), 32)
+	amount32 := float32(amount)
+
+	tx := Transaction{
+		Location:      location,
+		Amount:        dollarAmount,
+		NumericAmount: amount32,
+		NotifiedTime:  time.Now(),
+		UnixEpoch:     0,
+	}
+	tx.NotifiedTime = tx.NotifiedTime.Round(0)
+	tx.UnixEpoch = tx.NotifiedTime.Unix()
+
+	return tx
 }
 
 var ctx = context.Background()
