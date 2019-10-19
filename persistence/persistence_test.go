@@ -25,17 +25,10 @@ package persistence
 
 import (
 	"testing"
-	"time"
 	"transactionServices/extraction"
 )
 
 func TestSaveToDatabase(t *testing.T) {
-	tx := extraction.Transaction{
-		Location:      "Home",
-		Amount:        "$2.00",
-		NumericAmount: 2.00,
-		NotifiedTime:  time.Now(),
-	}
-	SaveToDatabase(&tx,"test-trapezitam")
+	tx := extraction.NewTransaction("home", "$2.20")
+	SaveToDatabase(&tx, "test-trapezitam")
 }
-

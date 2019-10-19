@@ -31,7 +31,7 @@ import (
 	"transactionServices/extraction"
 )
 
-const kind = "transactionv1"
+const kind = "transactionv2"
 
 func SaveToDatabase(t *extraction.Transaction, projectId string) {
 	ctx := context.Background()
@@ -52,5 +52,5 @@ func SaveToDatabase(t *extraction.Transaction, projectId string) {
 }
 
 func AddTransactionToBudget(t *extraction.Transaction) {
-
+	log.Fatalf("Not Implemented.")
 }
