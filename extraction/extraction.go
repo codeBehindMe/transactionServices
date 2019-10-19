@@ -47,6 +47,7 @@ type Transaction struct {
 
 var ctx = context.Background()
 
+// Gets the transaction text from the incoming request.
 func GetTransactionTextFromRequest(r *http.Request) string {
 	var txt TransactionText
 
@@ -108,4 +109,15 @@ func CreateTransactionFromAnalyseEntitiesResponse(
 	transaction.NotifiedTime = time.Now()
 
 	return transaction
+}
+
+func GetTransactionFromFromHttpRequest(r *http.Request) Transaction {
+	var tx Transaction
+
+	err := json.NewDecoder(r.Body).Decode(&tx)
+	if err != nil {
+		log.Fatalf("Failed to extract transaction from request: %v", err)
+	}
+
+	return tx
 }
