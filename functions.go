@@ -28,6 +28,7 @@ import (
 	"log"
 	"net/http"
 	"transactionServices/extraction"
+	"transactionServices/persistence"
 )
 
 func GetTransaction(w http.ResponseWriter, r *http.Request) {
@@ -46,4 +47,5 @@ func GetTransaction(w http.ResponseWriter, r *http.Request) {
 
 func SaveTransaction(w http.ResponseWriter, r *http.Request) {
 	tx := extraction.GetTransactionFromFromHttpRequest(r)
+	persistence.SaveToDatabase(&tx, "")
 }
