@@ -45,5 +45,5 @@ func GetTransaction(w http.ResponseWriter, r *http.Request) {
 }
 
 func SaveTransaction(w http.ResponseWriter, r *http.Request) {
-	panic("Not Implemented")
+	tx := extraction.GetTransactionFromFromHttpRequest(r)
 }
