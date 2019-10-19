@@ -27,6 +27,7 @@ import (
 	"encoding/json"
 	"log"
 	"net/http"
+	"os"
 	"transactionServices/extraction"
 	"transactionServices/persistence"
 )
@@ -47,6 +48,6 @@ func GetTransaction(w http.ResponseWriter, r *http.Request) {
 
 func SaveTransaction(w http.ResponseWriter, r *http.Request) {
 	tx := extraction.GetTransactionFromFromHttpRequest(r)
-	persistence.SaveToDatabase(&tx, "")
+	persistence.SaveToDatabase(&tx, os.Getenv("PROJECT_ID"))
 	w.WriteHeader(20)
 }
