@@ -52,15 +52,15 @@ func NewTransaction(location, dollarAmount string) Transaction {
 	amount, _ := strconv.ParseFloat(strings.Trim(dollarAmount, "$"), 32)
 	amount32 := float32(amount)
 
+	notifiedTime := time.Now().Round(0)
+
 	tx := Transaction{
 		Location:      location,
 		Amount:        dollarAmount,
 		NumericAmount: amount32,
-		NotifiedTime:  time.Now(),
-		UnixEpoch:     0,
+		NotifiedTime:  notifiedTime,
+		UnixEpoch:     notifiedTime.Unix(),
 	}
-	tx.NotifiedTime = tx.NotifiedTime.Round(0)
-	tx.UnixEpoch = tx.NotifiedTime.Unix()
 
 	return tx
 }
