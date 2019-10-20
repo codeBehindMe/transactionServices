@@ -79,31 +79,31 @@ func AnalyseEntitiesInText(text *string) (*langpb.AnalyzeEntitiesResponse, error
 func CreateTransactionFromAnalyseEntitiesResponse(
 	aeResponse *langpb.AnalyzeEntitiesResponse) transaction.Transaction {
 
-	var transaction transaction.Transaction
+	var tx transaction.Transaction
 
 	for _, e := range aeResponse.GetEntities() {
 		switch e.Type {
 		case langpb.Entity_PRICE:
-			transaction.Amount = e.Name
+			tx.Amount = e.Name
 		case langpb.Entity_LOCATION:
-			transaction.Location = e.Name
+			tx.Location = e.Name
 		case langpb.Entity_OTHER:
-			transaction.Location = e.Name
+			tx.Location = e.Name
 		case langpb.Entity_ORGANIZATION:
-			transaction.Location = e.Name
+			tx.Location = e.Name
 		case langpb.Entity_NUMBER:
 			f, err := strconv.ParseFloat(e.Name, 32)
 			if err != nil {
 				panic(err)
 			}
-			transaction.NumericAmount = float32(f)
+			tx.NumericAmount = float32(f)
 		}
 	}
 
-	transaction.NotifiedTime = time.Now()
-	transaction.UnixEpoch = transaction.NotifiedTime.Unix()
+	tx.NotifiedTime = time.Now()
+	tx.UnixEpoch = tx.NotifiedTime.Unix()
 
-	return transaction
+	return tx
 }
 
 func GetTransactionFromFromHttpRequest(r *http.Request) transaction.Transaction {
