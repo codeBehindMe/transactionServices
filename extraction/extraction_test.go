@@ -68,7 +68,7 @@ func TestCloudNLP(t *testing.T) {
 }
 
 func TestGetTransactionTextFromRequest(t *testing.T) {
-	jsonPayload := []byte(`{"TransactionText":"You spent $13.40 at Maccas"}`)
+	jsonPayload := []byte(`{"transactionText":"You spent $13.40 at Maccas"}`)
 	expectedResponse := "You spent $13.40 at Maccas"
 
 	req, err := http.NewRequest("POST", "/tdecode", bytes.NewBuffer(jsonPayload))

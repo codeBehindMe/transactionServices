@@ -35,15 +35,15 @@ import (
 	"transactionServices/transaction"
 )
 
-type TransactionText struct {
+type transactionText struct {
 	TransactionText string
 }
 
-var ctx = context.Background()
+var _ctx = context.Background()
 
 // Gets the transaction text from the incoming request.
 func GetTransactionTextFromRequest(r *http.Request) string {
-	var txt TransactionText
+	var txt transactionText
 
 	err := json.NewDecoder(r.Body).Decode(&txt)
 
@@ -57,13 +57,13 @@ func GetTransactionTextFromRequest(r *http.Request) string {
 
 func AnalyseEntitiesInText(text *string) (*langpb.AnalyzeEntitiesResponse, error) {
 
-	nlpClient, err := lang.NewClient(ctx)
+	nlpClient, err := lang.NewClient(_ctx)
 
 	if err != nil {
 		log.Fatalf("Failed to create client: %v", err)
 	}
 
-	return nlpClient.AnalyzeEntities(ctx,
+	return nlpClient.AnalyzeEntities(_ctx,
 		&langpb.AnalyzeEntitiesRequest{
 			Document: &langpb.Document{
 				Type: langpb.Document_PLAIN_TEXT,
