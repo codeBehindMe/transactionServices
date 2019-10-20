@@ -100,8 +100,7 @@ func CreateTransactionFromAnalyseEntitiesResponse(
 		}
 	}
 
-	tx.NotifiedTime = time.Now()
-	tx.UnixEpoch = tx.NotifiedTime.Unix()
+	tx.TxNotifyUnixEpoch = time.Now().Unix()
 
 	return tx
 }

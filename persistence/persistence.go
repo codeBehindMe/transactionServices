@@ -31,8 +31,6 @@ import (
 	"transactionServices/transaction"
 )
 
-const kind = "transactionv2"
-
 func SaveToDatabase(t *transaction.Transaction, projectId string) {
 	ctx := context.Background()
 
@@ -41,14 +39,15 @@ func SaveToDatabase(t *transaction.Transaction, projectId string) {
 		log.Fatalf("Error occurred when trying to create data store client: %v", err)
 	}
 
-	taskKey := datastore.NameKey(kind, "", nil)
+	// Empty name uses auto identity in datastore.
+	taskKey := datastore.NameKey(transaction.Version, "", nil)
 
 	_, err = dsClient.Put(ctx, taskKey, t)
 	if err != nil {
 		log.Fatalf("Failed to save transaction: %v", err)
 	}
 	// FIXME: Printing instead of logging
-	fmt.Printf("Saved %v",taskKey)
+	fmt.Printf("Saved %v", taskKey)
 }
 
 func AddTransactionToBudget(t *transaction.Transaction) {

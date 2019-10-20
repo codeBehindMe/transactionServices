@@ -24,34 +24,40 @@
 package transaction
 
 import (
+	"log"
 	"strconv"
 	"strings"
 	"time"
 )
 
+const Version = "transactionv3"
+
 type Transaction struct {
-	Location      string
-	Amount        string
-	NumericAmount float32
-	NotifiedTime  time.Time
-	UnixEpoch     int64
+	TransactionVersion string
+	Location           string
+	Amount             string
+	NumericAmount      float32
+	TxNotifyUnixEpoch  int64
 }
 
 func New(location, dollarAmount string) Transaction {
 	// FIXME: Design needs to be revised.
-	amount, _ := strconv.ParseFloat(strings.Trim(dollarAmount, "$"), 32)
+	amount, err := strconv.ParseFloat(strings.Trim(dollarAmount, "$"), 32)
+
+	if err != nil {
+		log.Fatalf("Error when parsing amount: %v", err)
+	}
 	amount32 := float32(amount)
 
 	notifiedTime := time.Now().Round(0)
 
 	tx := Transaction{
-		Location:      location,
-		Amount:        dollarAmount,
-		NumericAmount: amount32,
-		NotifiedTime:  notifiedTime,
-		UnixEpoch:     notifiedTime.Unix(),
+		TransactionVersion: Version,
+		Location:           location,
+		Amount:             dollarAmount,
+		NumericAmount:      amount32,
+		TxNotifyUnixEpoch:  notifiedTime.Unix(),
 	}
 
 	return tx
 }
-

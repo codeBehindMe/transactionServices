@@ -37,7 +37,6 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"testing"
-	"time"
 	"transactionServices/transaction"
 )
 
@@ -97,12 +96,7 @@ func TestCreateTransactionFromAnalyseEntitiesResponse(t *testing.T) {
 	testText := "You spent $10 at home"
 	AEResponse, err := AnalyseEntitiesInText(&testText)
 
-	targetTx := transaction.Transaction{
-		Location:      "home",
-		Amount:        "$10",
-		NumericAmount: 10,
-		NotifiedTime:  time.Now(),
-	}
+	targetTx :=  transaction.New("home","$10")
 
 	if err != nil {
 		panic(err)
@@ -128,20 +122,7 @@ func TestCreateTransactionFromAnalyseEntitiesResponse(t *testing.T) {
 }
 
 func TestGetTransactionFromFromHttpRequest(t *testing.T) {
-	ntfTime := time.Now()
-	tx := transaction.Transaction{
-		Location:      "home",
-		Amount:        "$10.00",
-		NumericAmount: 10,
-		NotifiedTime:  ntfTime,
-		UnixEpoch:     ntfTime.Unix(),
-	}
-
-	// When you Jsonise only the wall clock time is kept, so need to get rid of it in the original transaction so the
-	// returned result once it comes back through http request is the same.
-	// Comment this line out to see what happens.
-	// FIXME: Is there a cleaner way to do this?
-	tx.NotifiedTime = tx.NotifiedTime.Round(0)
+	tx := transaction.New("home","$10.00")
 	jsonPayload, err := json.Marshal(&tx)
 
 	if err != nil {
