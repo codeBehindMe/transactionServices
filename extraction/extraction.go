@@ -31,38 +31,12 @@ import (
 	"log"
 	"net/http"
 	"strconv"
-	"strings"
 	"time"
+	"transactionServices/transaction"
 )
 
 type TransactionText struct {
 	TransactionText string
-}
-
-type Transaction struct {
-	Location      string
-	Amount        string
-	NumericAmount float32
-	NotifiedTime  time.Time
-	UnixEpoch     int64
-}
-
-func NewTransaction(location, dollarAmount string) Transaction {
-	// FIXME: Design needs to be revised.
-	amount, _ := strconv.ParseFloat(strings.Trim(dollarAmount, "$"), 32)
-	amount32 := float32(amount)
-
-	notifiedTime := time.Now().Round(0)
-
-	tx := Transaction{
-		Location:      location,
-		Amount:        dollarAmount,
-		NumericAmount: amount32,
-		NotifiedTime:  notifiedTime,
-		UnixEpoch:     notifiedTime.Unix(),
-	}
-
-	return tx
 }
 
 var ctx = context.Background()
@@ -103,9 +77,9 @@ func AnalyseEntitiesInText(text *string) (*langpb.AnalyzeEntitiesResponse, error
 }
 
 func CreateTransactionFromAnalyseEntitiesResponse(
-	aeResponse *langpb.AnalyzeEntitiesResponse) Transaction {
+	aeResponse *langpb.AnalyzeEntitiesResponse) transaction.Transaction {
 
-	var transaction Transaction
+	var transaction transaction.Transaction
 
 	for _, e := range aeResponse.GetEntities() {
 		switch e.Type {
@@ -132,8 +106,8 @@ func CreateTransactionFromAnalyseEntitiesResponse(
 	return transaction
 }
 
-func GetTransactionFromFromHttpRequest(r *http.Request) Transaction {
-	var tx Transaction
+func GetTransactionFromFromHttpRequest(r *http.Request) transaction.Transaction {
+	var tx transaction.Transaction
 
 	err := json.NewDecoder(r.Body).Decode(&tx)
 	if err != nil {

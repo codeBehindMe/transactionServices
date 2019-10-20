@@ -21,14 +21,37 @@
   Contact: github.com/codeBehindMe
 */
 
-package persistence
+package transaction
 
 import (
-	"testing"
-	"transactionServices/transaction"
+	"strconv"
+	"strings"
+	"time"
 )
 
-func TestSaveToDatabase(t *testing.T) {
-	tx := transaction.NewTransaction("home", "$2.20")
-	SaveToDatabase(&tx, "test-trapezitam")
+type Transaction struct {
+	Location      string
+	Amount        string
+	NumericAmount float32
+	NotifiedTime  time.Time
+	UnixEpoch     int64
 }
+
+func NewTransaction(location, dollarAmount string) Transaction {
+	// FIXME: Design needs to be revised.
+	amount, _ := strconv.ParseFloat(strings.Trim(dollarAmount, "$"), 32)
+	amount32 := float32(amount)
+
+	notifiedTime := time.Now().Round(0)
+
+	tx := Transaction{
+		Location:      location,
+		Amount:        dollarAmount,
+		NumericAmount: amount32,
+		NotifiedTime:  notifiedTime,
+		UnixEpoch:     notifiedTime.Unix(),
+	}
+
+	return tx
+}
+

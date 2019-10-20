@@ -28,12 +28,12 @@ import (
 	"context"
 	"fmt"
 	"log"
-	"transactionServices/extraction"
+	"transactionServices/transaction"
 )
 
 const kind = "transactionv2"
 
-func SaveToDatabase(t *extraction.Transaction, projectId string) {
+func SaveToDatabase(t *transaction.Transaction, projectId string) {
 	ctx := context.Background()
 
 	dsClient, err := datastore.NewClient(ctx, projectId)
@@ -51,6 +51,6 @@ func SaveToDatabase(t *extraction.Transaction, projectId string) {
 	fmt.Printf("Saved %v",taskKey)
 }
 
-func AddTransactionToBudget(t *extraction.Transaction) {
+func AddTransactionToBudget(t *transaction.Transaction) {
 	log.Fatalf("Not Implemented.")
 }

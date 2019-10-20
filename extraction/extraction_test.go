@@ -38,10 +38,11 @@ import (
 	"net/http/httptest"
 	"testing"
 	"time"
+	"transactionServices/transaction"
 )
 
 func TestNewTransaction(t *testing.T) {
-	tx := NewTransaction("Home","$2.20")
+	tx := transaction.NewTransaction("Home","$2.20")
 
 	if tx.Location != "Home"{
 		t.Errorf("Incorrect location")
@@ -96,7 +97,7 @@ func TestCreateTransactionFromAnalyseEntitiesResponse(t *testing.T) {
 	testText := "You spent $10 at home"
 	AEResponse, err := AnalyseEntitiesInText(&testText)
 
-	targetTx := Transaction{
+	targetTx := transaction.Transaction{
 		Location:      "home",
 		Amount:        "$10",
 		NumericAmount: 10,
@@ -128,7 +129,7 @@ func TestCreateTransactionFromAnalyseEntitiesResponse(t *testing.T) {
 
 func TestGetTransactionFromFromHttpRequest(t *testing.T) {
 	ntfTime := time.Now()
-	tx := Transaction{
+	tx := transaction.Transaction{
 		Location:      "home",
 		Amount:        "$10.00",
 		NumericAmount: 10,
