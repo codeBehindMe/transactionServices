@@ -21,33 +21,43 @@
   Contact: github.com/codeBehindMe
 */
 
-package transactionServices
+package transaction
 
 import (
-	"encoding/json"
 	"log"
-	"net/http"
-	"os"
-	"transactionServices/extraction"
-	"transactionServices/persistence"
+	"strconv"
+	"strings"
+	"time"
 )
 
-func GetTransaction(w http.ResponseWriter, r *http.Request) {
-	transactionText := extraction.GetTransactionTextFromRequest(r)
+const Version = "transactionv3"
 
-	analyseEntitiesResponse, err := extraction.AnalyseEntitiesInText(&transactionText)
-
-	if err != nil {
-		log.Fatalf("Failed to analyse entities: %v", err)
-	}
-
-	transaction := extraction.CreateTransactionFromAnalyseEntitiesResponse(analyseEntitiesResponse)
-
-	_ = json.NewEncoder(w).Encode(transaction)
+type Transaction struct {
+	TransactionVersion string
+	Location           string
+	Amount             string
+	NumericAmount      float32
+	TxNotifyUnixEpoch  int64
 }
 
-func SaveTransaction(w http.ResponseWriter, r *http.Request) {
-	tx := extraction.GetTransactionFromFromHttpRequest(r)
-	persistence.SaveToDatabase(&tx, os.Getenv("PROJECT_ID"))
-	w.WriteHeader(20)
+func New(location, dollarAmount string) Transaction {
+	// FIXME: Design needs to be revised.
+	amount, err := strconv.ParseFloat(strings.Trim(dollarAmount, "$"), 32)
+
+	if err != nil {
+		log.Fatalf("Error when parsing amount: %v", err)
+	}
+	amount32 := float32(amount)
+
+	notifiedTime := time.Now().Round(0)
+
+	tx := Transaction{
+		TransactionVersion: Version,
+		Location:           location,
+		Amount:             dollarAmount,
+		NumericAmount:      amount32,
+		TxNotifyUnixEpoch:  notifiedTime.Unix(),
+	}
+
+	return tx
 }

@@ -21,33 +21,35 @@
   Contact: github.com/codeBehindMe
 */
 
-package transactionServices
+package persistence
 
 import (
-	"encoding/json"
+	"cloud.google.com/go/datastore"
+	"context"
+	"fmt"
 	"log"
-	"net/http"
-	"os"
-	"transactionServices/extraction"
-	"transactionServices/persistence"
+	"transactionServices/transaction"
 )
 
-func GetTransaction(w http.ResponseWriter, r *http.Request) {
-	transactionText := extraction.GetTransactionTextFromRequest(r)
+func SaveToDatabase(t *transaction.Transaction, projectId string) {
+	ctx := context.Background()
 
-	analyseEntitiesResponse, err := extraction.AnalyseEntitiesInText(&transactionText)
-
+	dsClient, err := datastore.NewClient(ctx, projectId)
 	if err != nil {
-		log.Fatalf("Failed to analyse entities: %v", err)
+		log.Fatalf("Error occurred when trying to create data store client: %v", err)
 	}
 
-	transaction := extraction.CreateTransactionFromAnalyseEntitiesResponse(analyseEntitiesResponse)
+	// Empty name uses auto identity in datastore.
+	taskKey := datastore.NameKey(transaction.Version, "", nil)
 
-	_ = json.NewEncoder(w).Encode(transaction)
+	_, err = dsClient.Put(ctx, taskKey, t)
+	if err != nil {
+		log.Fatalf("Failed to save transaction: %v", err)
+	}
+	// FIXME: Printing instead of logging
+	fmt.Printf("Saved %v", taskKey)
 }
 
-func SaveTransaction(w http.ResponseWriter, r *http.Request) {
-	tx := extraction.GetTransactionFromFromHttpRequest(r)
-	persistence.SaveToDatabase(&tx, os.Getenv("PROJECT_ID"))
-	w.WriteHeader(20)
+func AddTransactionToBudget(t *transaction.Transaction) {
+	log.Fatalf("Not Implemented.")
 }

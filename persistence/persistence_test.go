@@ -21,33 +21,14 @@
   Contact: github.com/codeBehindMe
 */
 
-package transactionServices
+package persistence
 
 import (
-	"encoding/json"
-	"log"
-	"net/http"
-	"os"
-	"transactionServices/extraction"
-	"transactionServices/persistence"
+	"testing"
+	"transactionServices/transaction"
 )
 
-func GetTransaction(w http.ResponseWriter, r *http.Request) {
-	transactionText := extraction.GetTransactionTextFromRequest(r)
-
-	analyseEntitiesResponse, err := extraction.AnalyseEntitiesInText(&transactionText)
-
-	if err != nil {
-		log.Fatalf("Failed to analyse entities: %v", err)
-	}
-
-	transaction := extraction.CreateTransactionFromAnalyseEntitiesResponse(analyseEntitiesResponse)
-
-	_ = json.NewEncoder(w).Encode(transaction)
-}
-
-func SaveTransaction(w http.ResponseWriter, r *http.Request) {
-	tx := extraction.GetTransactionFromFromHttpRequest(r)
-	persistence.SaveToDatabase(&tx, os.Getenv("PROJECT_ID"))
-	w.WriteHeader(20)
+func TestSaveToDatabase(t *testing.T) {
+	tx := transaction.New("home", "$2.20")
+	SaveToDatabase(&tx, "test-trapezitam")
 }

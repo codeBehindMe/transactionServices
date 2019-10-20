@@ -31,13 +31,28 @@ package extraction
 
 import (
 	"bytes"
+	"encoding/json"
 	"fmt"
 	"io"
 	"net/http"
 	"net/http/httptest"
 	"testing"
-	"time"
+	"transactionServices/transaction"
 )
+
+func TestNewTransaction(t *testing.T) {
+	tx := transaction.New("Home","$2.20")
+
+	if tx.Location != "Home"{
+		t.Errorf("Incorrect location")
+	}
+	if tx.Amount != "$2.20"{
+		t.Errorf("Incorrect Amount")
+	}
+	if tx.NumericAmount != 2.2{
+		t.Errorf("Incorrect Numeric Aount")
+	}
+}
 
 func TestCloudNLP(t *testing.T) {
 	testText := "You spend $10 at home"
@@ -52,7 +67,7 @@ func TestCloudNLP(t *testing.T) {
 }
 
 func TestGetTransactionTextFromRequest(t *testing.T) {
-	jsonPayload := []byte(`{"TransactionText":"You spent $13.40 at Maccas"}`)
+	jsonPayload := []byte(`{"transactionText":"You spent $13.40 at Maccas"}`)
 	expectedResponse := "You spent $13.40 at Maccas"
 
 	req, err := http.NewRequest("POST", "/tdecode", bytes.NewBuffer(jsonPayload))
@@ -81,12 +96,7 @@ func TestCreateTransactionFromAnalyseEntitiesResponse(t *testing.T) {
 	testText := "You spent $10 at home"
 	AEResponse, err := AnalyseEntitiesInText(&testText)
 
-	targetTx := Transaction{
-		Location:      "home",
-		Amount:        "$10",
-		NumericAmount: 10,
-		NotifiedTime:  time.Now(),
-	}
+	targetTx :=  transaction.New("home","$10")
 
 	if err != nil {
 		panic(err)
@@ -100,7 +110,7 @@ func TestCreateTransactionFromAnalyseEntitiesResponse(t *testing.T) {
 			targetTx.Location, outputTx.Location)
 	}
 
-	if outputTx.Amount != targetTx.Amount{
+	if outputTx.Amount != targetTx.Amount {
 		t.Errorf("Incorrect amount in transaction. Expected \n %v found \n %v",
 			targetTx.Amount, outputTx.Amount)
 	}
@@ -109,4 +119,32 @@ func TestCreateTransactionFromAnalyseEntitiesResponse(t *testing.T) {
 		t.Errorf("Incorrect NumericAmount in transaction. Expected \n %v found \n %v",
 			targetTx.NumericAmount, outputTx.NumericAmount)
 	}
+}
+
+func TestGetTransactionFromFromHttpRequest(t *testing.T) {
+	tx := transaction.New("home","$10.00")
+	jsonPayload, err := json.Marshal(&tx)
+
+	if err != nil {
+		t.Fatalf("Failed test with error: %v", err)
+	}
+
+	req, err := http.NewRequest("POST", "/txdecode", bytes.NewBuffer(jsonPayload))
+
+	if err != nil {
+		t.Fatalf("Failed test error: %v", err)
+	}
+
+	req.Header.Set("Content-Type", "application/json")
+
+	tDecodeHandler := func(w http.ResponseWriter, r *http.Request) {
+		txOutput := GetTransactionFromFromHttpRequest(r)
+
+		if txOutput != tx {
+			t.Errorf("Expected: %v \n :got: %v", tx, txOutput)
+		}
+	}
+
+	handler := http.HandlerFunc(tDecodeHandler)
+	handler.ServeHTTP(nil, req)
 }

@@ -32,23 +32,18 @@ import (
 	"net/http"
 	"strconv"
 	"time"
+	"transactionServices/transaction"
 )
 
-type TransactionText struct {
+type transactionText struct {
 	TransactionText string
 }
 
-type Transaction struct {
-	Location      string
-	Amount        string
-	NumericAmount float32
-	NotifiedTime  time.Time
-}
+var _ctx = context.Background()
 
-var ctx = context.Background()
-
+// Gets the transaction text from the incoming request.
 func GetTransactionTextFromRequest(r *http.Request) string {
-	var txt TransactionText
+	var txt transactionText
 
 	err := json.NewDecoder(r.Body).Decode(&txt)
 
@@ -62,13 +57,13 @@ func GetTransactionTextFromRequest(r *http.Request) string {
 
 func AnalyseEntitiesInText(text *string) (*langpb.AnalyzeEntitiesResponse, error) {
 
-	nlpClient, err := lang.NewClient(ctx)
+	nlpClient, err := lang.NewClient(_ctx)
 
 	if err != nil {
 		log.Fatalf("Failed to create client: %v", err)
 	}
 
-	return nlpClient.AnalyzeEntities(ctx,
+	return nlpClient.AnalyzeEntities(_ctx,
 		&langpb.AnalyzeEntitiesRequest{
 			Document: &langpb.Document{
 				Type: langpb.Document_PLAIN_TEXT,
@@ -82,30 +77,41 @@ func AnalyseEntitiesInText(text *string) (*langpb.AnalyzeEntitiesResponse, error
 }
 
 func CreateTransactionFromAnalyseEntitiesResponse(
-	aeResponse *langpb.AnalyzeEntitiesResponse) Transaction {
+	aeResponse *langpb.AnalyzeEntitiesResponse) transaction.Transaction {
 
-	var transaction Transaction
+	var tx transaction.Transaction
 
 	for _, e := range aeResponse.GetEntities() {
 		switch e.Type {
 		case langpb.Entity_PRICE:
-			transaction.Amount = e.Name
+			tx.Amount = e.Name
 		case langpb.Entity_LOCATION:
-			transaction.Location = e.Name
+			tx.Location = e.Name
 		case langpb.Entity_OTHER:
-			transaction.Location = e.Name
+			tx.Location = e.Name
 		case langpb.Entity_ORGANIZATION:
-			transaction.Location = e.Name
+			tx.Location = e.Name
 		case langpb.Entity_NUMBER:
 			f, err := strconv.ParseFloat(e.Name, 32)
 			if err != nil {
 				panic(err)
 			}
-			transaction.NumericAmount = float32(f)
+			tx.NumericAmount = float32(f)
 		}
 	}
 
-	transaction.NotifiedTime = time.Now()
+	tx.TxNotifyUnixEpoch = time.Now().Unix()
 
-	return transaction
+	return tx
+}
+
+func GetTransactionFromFromHttpRequest(r *http.Request) transaction.Transaction {
+	var tx transaction.Transaction
+
+	err := json.NewDecoder(r.Body).Decode(&tx)
+	if err != nil {
+		log.Fatalf("Failed to extract transaction from request: %v", err)
+	}
+
+	return tx
 }

@@ -35,3 +35,17 @@ steps:
       - --timeout=10s
       - --max-instances=1
       - --region=asia-east2
+  - name: 'gcr.io/cloud-builders/gcloud'
+    id: 'Deploy SaveTransaction'
+    args:
+      - functions
+      - deploy
+      - SaveTransaction
+      - --source=.
+      - --runtime=go111
+      - --trigger-http
+      - --memory=128MB
+      - --timeoout=10s
+      - --max-instances=1
+      - --region=asia-east2
+      - --set-env-vars PROJECT_ID=$PROJECT_ID

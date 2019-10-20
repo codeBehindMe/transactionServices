@@ -1,2 +1,5 @@
-credentials.json
+extraction/credentials.json
 .idea/
+*.credentials
+datastore-app-user.json
+.gcloudignore
