@@ -29,6 +29,6 @@ import (
 )
 
 func TestSaveToDatabase(t *testing.T) {
-	tx := transaction.NewTransaction("home", "$2.20")
+	tx := transaction.New("home", "$2.20")
 	SaveToDatabase(&tx, "test-trapezitam")
 }

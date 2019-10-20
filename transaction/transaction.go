@@ -37,7 +37,7 @@ type Transaction struct {
 	UnixEpoch     int64
 }
 
-func NewTransaction(location, dollarAmount string) Transaction {
+func New(location, dollarAmount string) Transaction {
 	// FIXME: Design needs to be revised.
 	amount, _ := strconv.ParseFloat(strings.Trim(dollarAmount, "$"), 32)
 	amount32 := float32(amount)

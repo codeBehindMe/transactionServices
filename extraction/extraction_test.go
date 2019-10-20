@@ -42,7 +42,7 @@ import (
 )
 
 func TestNewTransaction(t *testing.T) {
-	tx := transaction.NewTransaction("Home","$2.20")
+	tx := transaction.New("Home","$2.20")
 
 	if tx.Location != "Home"{
 		t.Errorf("Incorrect location")
