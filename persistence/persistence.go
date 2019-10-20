@@ -26,7 +26,6 @@ package persistence
 import (
 	"cloud.google.com/go/datastore"
 	"context"
-	"fmt"
 	"log"
 	"transactionServices/transaction"
 )
@@ -46,8 +45,7 @@ func SaveToDatabase(t *transaction.Transaction, projectId string) {
 	if err != nil {
 		log.Fatalf("Failed to save transaction: %v", err)
 	}
-	// FIXME: Printing instead of logging
-	fmt.Printf("Saved %v", taskKey)
+	log.Printf("Saved %v", taskKey)
 }
 
 func AddTransactionToBudget(t *transaction.Transaction) {

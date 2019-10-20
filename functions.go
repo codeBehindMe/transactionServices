@@ -49,5 +49,5 @@ func GetTransaction(w http.ResponseWriter, r *http.Request) {
 func SaveTransaction(w http.ResponseWriter, r *http.Request) {
 	tx := extraction.GetTransactionFromFromHttpRequest(r)
 	persistence.SaveToDatabase(&tx, os.Getenv("PROJECT_ID"))
-	w.WriteHeader(20)
+	w.WriteHeader(200)
 }
