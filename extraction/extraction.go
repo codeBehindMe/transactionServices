@@ -28,6 +28,7 @@ import (
 	"context"
 	"encoding/json"
 	langpb "google.golang.org/genproto/googleapis/cloud/language/v1"
+	"io/ioutil"
 	"log"
 	"net/http"
 	"strconv"
@@ -45,7 +46,13 @@ var _ctx = context.Background()
 func GetTransactionTextFromRequest(r *http.Request) string {
 	var txt transactionText
 
-	err := json.NewDecoder(r.Body).Decode(&txt)
+	bodyBytes, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		log.Fatalf("Could not read bytes from request body: %v", err)
+	}
+	requestBody := string(bodyBytes)
+	log.Printf("Recieved body: %v", requestBody)
+	err = json.Unmarshal(bodyBytes,&txt)
 
 	if err != nil {
 		log.Fatalf(
