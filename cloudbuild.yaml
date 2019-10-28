@@ -23,13 +23,6 @@
 
 steps:
   - name: 'golang'
-    id: 'Go mod init'
-    args:
-      - go
-      - mod
-      - init
-      - transactionServices
-  - name: 'golang'
     id: 'Go mod vendor'
     args:
       - go
