@@ -22,6 +22,19 @@
 # Contact: github.com/codeBehindMe
 
 steps:
+  - name: 'golang'
+    id: 'Go mod init'
+    args:
+      - go
+      - mod
+      - init
+      - transactionServices
+  - name: 'golang'
+    id: 'Go mod vendor'
+    args:
+      - go
+      - mod
+      - vendor
   - name: 'gcr.io/cloud-builders/gcloud'
     id: 'Deploy Get Transaction'
     args:
