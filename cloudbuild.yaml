@@ -56,3 +56,27 @@ steps:
       - --region=asia-east2
       - --set-env-vars
       - PROJECT_ID=$PROJECT_ID
+  - name: gcr.io/cloud-builders/gsutil
+    id: Copy cloud function policy bindings
+    args:
+      - cp
+      - gs://test-trapezitam/policy.json
+      - policy.json
+  - name: gcr.io/cloud-builders/gcloud
+    id: Apply policy to GetTransaction
+    args:
+      - beta
+      - functions
+      - set-iam-policy
+      - GetTransaction
+      - policy.json
+      - --region=asia-east2
+  - name: gcr.io/cloud-builders/gcloud
+    id: Apply policy to SaveTransaction
+    args:
+      - beta
+      - functions
+      - set-iam-policy
+      - SaveTransaction
+      - policy.json
+      - --region=asia-east2
