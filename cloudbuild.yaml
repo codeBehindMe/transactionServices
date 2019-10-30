@@ -60,7 +60,7 @@ steps:
     id: Copy cloud function policy bindings
     args:
       - cp
-      - gs://test-trapezitam/policy.json
+      - gs://test-trapezitam-cloudfunc-policy/policy.json
       - policy.json
   - name: gcr.io/cloud-builders/gcloud
     id: Apply policy to GetTransaction
