@@ -36,7 +36,9 @@ import (
 func authenticateFunction(r *http.Request) error {
 
 	ak := r.Header.Get(authentication.HeaderKey)
-	return authentication.NewAuthenticator().Authenticate(ak)
+	auth := authentication.NewAuthenticator()
+	err := auth.Authenticate(ak)
+	return err
 }
 func GetTransaction(w http.ResponseWriter, r *http.Request) {
 
