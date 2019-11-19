@@ -51,3 +51,7 @@ func SaveTransaction(w http.ResponseWriter, r *http.Request) {
 	persistence.SaveToDatabase(&tx, os.Getenv("PROJECT_ID"))
 	w.WriteHeader(200)
 }
+
+func AddToBudget(w http.ResponseWriter, r *http.Request) {
+
+}
