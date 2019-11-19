@@ -30,7 +30,7 @@ import (
 	"log"
 )
 
-const headerKey = "Auth-Key"
+const HeaderKey = "Auth-Key"
 const projectID = "test-trapezitam"
 const keyType = "key"
 

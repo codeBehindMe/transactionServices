@@ -28,11 +28,22 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"transactionServices/authentication"
 	"transactionServices/extraction"
 	"transactionServices/persistence"
 )
 
+func authenticateFunction(r *http.Request) error {
+
+	ak := r.Header.Get(authentication.HeaderKey)
+	return authentication.NewAuthenticator().Authenticate(ak)
+}
 func GetTransaction(w http.ResponseWriter, r *http.Request) {
+
+	err := authenticateFunction(r)
+	if err != nil {
+		log.Fatalf("Failed to authenticate! Exiting.")
+	}
 	transactionText := extraction.GetTransactionTextFromRequest(r)
 
 	analyseEntitiesResponse, err := extraction.AnalyseEntitiesInText(&transactionText)
@@ -47,6 +58,11 @@ func GetTransaction(w http.ResponseWriter, r *http.Request) {
 }
 
 func SaveTransaction(w http.ResponseWriter, r *http.Request) {
+
+	err := authenticateFunction(r)
+	if err != nil {
+		log.Fatalf("Failed to authenticate! Exiting.")
+	}
 	tx := extraction.GetTransactionFromFromHttpRequest(r)
 	persistence.SaveToDatabase(&tx, os.Getenv("PROJECT_ID"))
 	w.WriteHeader(200)
