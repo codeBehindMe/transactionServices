@@ -47,7 +47,7 @@ func GetTransaction(w http.ResponseWriter, r *http.Request) {
 
 	err := authenticateFunction(r)
 	if err != nil {
-		log.Fatalf("Failed to authenticate! Exiting.")
+		log.Fatalf("Failed to authenticate! Exiting. %v", err)
 	}
 	transactionText := extraction.GetTransactionTextFromRequest(r)
 
