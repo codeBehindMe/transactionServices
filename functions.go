@@ -36,6 +36,7 @@ import (
 func authenticateFunction(r *http.Request) error {
 
 	ak := r.Header.Get(authentication.HeaderKey)
+	log.Printf("recieved key %v", ak)
 	auth := authentication.NewAuthenticator()
 	err := auth.Authenticate(ak)
 	return err
