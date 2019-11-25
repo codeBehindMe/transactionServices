@@ -28,6 +28,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"strings"
 	"transactionServices/authentication"
 	"transactionServices/extraction"
 	"transactionServices/persistence"
@@ -36,9 +37,10 @@ import (
 func authenticateFunction(r *http.Request) error {
 
 	ak := r.Header.Get(authentication.HeaderKey)
-	log.Printf("recieved key %v", ak)
+	splitToken := strings.Split(ak, "Bearer")
+	log.Printf("recieved key %v", splitToken[1])
 	auth := authentication.NewAuthenticator()
-	err := auth.Authenticate(ak)
+	err := auth.Authenticate(splitToken[1])
 	return err
 }
 func GetTransaction(w http.ResponseWriter, r *http.Request) {
