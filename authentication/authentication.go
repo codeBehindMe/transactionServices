@@ -71,7 +71,6 @@ func (a *Authenticator) Authenticate(clientKey string) error {
 		log.Fatalf("Failed to get authentication clientKey: %v", err)
 	}
 
-	log.Printf("Got key: %v", authKey.AuthKey)
 	if strings.TrimSpace(authKey.AuthKey) == strings.TrimSpace(clientKey) {
 		a.isAuthenticated = true
 		return nil
