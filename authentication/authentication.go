@@ -70,7 +70,7 @@ func (a *Authenticator) Authenticate(clientKey string) error {
 		log.Fatalf("Failed to get authentication clientKey: %v", err)
 	}
 
-	log.Printf("Got key: %v", authKey)
+	log.Printf("Got key: %v", authKey.AuthKey)
 	if authKey.AuthKey == clientKey {
 		a.isAuthenticated = true
 		return nil
