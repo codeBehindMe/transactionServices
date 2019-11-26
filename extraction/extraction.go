@@ -121,8 +121,8 @@ func GetTransactionFromFromHttpRequest(r *http.Request) transaction.Transaction 
 		log.Fatalf("Error decoding body %v", err)
 	}
 
-	bodyString := string(bodyBytes)
-	log.Printf("Recieved body: %v", bodyString)
+	requestBody := string(bodyBytes)
+	log.Printf("Recieved body: %v", requestBody)
 
 	err = json.Unmarshal(bodyBytes,&tx)
 	if err != nil {
