@@ -44,6 +44,7 @@ type AuthKey struct {
 }
 
 const authRefernceID = 5637476211228672
+
 func NewAuthenticator() Authenticator {
 	return Authenticator{isAuthenticated: false}
 }
@@ -52,7 +53,7 @@ func datastoreKey(id int64) *datastore.Key {
 	return datastore.IDKey(keyType, id, nil)
 }
 
-func (a *Authenticator) Authenticate(clientKey string)  error{
+func (a *Authenticator) Authenticate(clientKey string) error {
 	ctx := context.Background()
 
 	dsClient, err := datastore.NewClient(ctx, projectID)
@@ -69,6 +70,7 @@ func (a *Authenticator) Authenticate(clientKey string)  error{
 		log.Fatalf("Failed to get authentication clientKey: %v", err)
 	}
 
+	log.Printf("Got key: %v", authKey)
 	if authKey.AuthKey == clientKey {
 		a.isAuthenticated = true
 		return nil
