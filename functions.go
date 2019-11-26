@@ -64,10 +64,10 @@ func GetTransaction(w http.ResponseWriter, r *http.Request) {
 
 func SaveTransaction(w http.ResponseWriter, r *http.Request) {
 
-	//err := authenticateFunction(r)
-	//if err != nil {
-	//	log.Fatalf("Failed to authenticate! Exiting.")
-	//}
+	err := authenticateFunction(r)
+	if err != nil {
+		log.Fatalf("Failed to authenticate! Exiting.")
+	}
 	tx := extraction.GetTransactionFromFromHttpRequest(r)
 	persistence.SaveToDatabase(&tx, os.Getenv("PROJECT_ID"))
 	w.WriteHeader(200)
