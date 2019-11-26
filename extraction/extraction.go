@@ -116,7 +116,15 @@ func CreateTransactionFromAnalyseEntitiesResponse(
 func GetTransactionFromFromHttpRequest(r *http.Request) transaction.Transaction {
 	var tx transaction.Transaction
 
-	err := json.NewDecoder(r.Body).Decode(&tx)
+	bodyBytes, err := ioutil.ReadAll(r.Body)
+	if err != nil{
+		log.Fatalf("Error decoding body %v", err)
+	}
+
+	bodyString := string(bodyBytes)
+	log.Printf("Recieved body: %v", bodyString)
+
+	err = json.Unmarshal(bodyBytes,&tx)
 	if err != nil {
 		log.Fatalf("Failed to extract transaction from request: %v", err)
 	}
