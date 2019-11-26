@@ -28,6 +28,7 @@ import (
 	"context"
 	"errors"
 	"log"
+	"strings"
 )
 
 const HeaderKey = "Authorization"
@@ -71,7 +72,7 @@ func (a *Authenticator) Authenticate(clientKey string) error {
 	}
 
 	log.Printf("Got key: %v", authKey.AuthKey)
-	if authKey.AuthKey == clientKey {
+	if strings.TrimSpace(authKey.AuthKey) == strings.TrimSpace(clientKey) {
 		a.isAuthenticated = true
 		return nil
 	}
