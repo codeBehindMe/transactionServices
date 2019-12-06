@@ -25,10 +25,7 @@ package authentication
 
 import (
 	"cloud.google.com/go/datastore"
-	"context"
 	"errors"
-	"log"
-	"strings"
 )
 
 const HeaderKey = "Authorization"
@@ -44,7 +41,7 @@ type AuthKey struct {
 	KeyType string
 }
 
-const authRefernceID = 5637476211228672
+const authRefernceID = "5194620877fd2a6cb2ea948682b171f5"
 
 func NewAuthenticator() Authenticator {
 	return Authenticator{isAuthenticated: false}
@@ -55,23 +52,8 @@ func datastoreKey(id int64) *datastore.Key {
 }
 
 func (a *Authenticator) Authenticate(clientKey string) error {
-	ctx := context.Background()
 
-	dsClient, err := datastore.NewClient(ctx, projectID)
-	if err != nil {
-		log.Fatalf("Error occured while trying to create datastore client: %v", err)
-	}
-
-	k := datastoreKey(authRefernceID)
-
-	authKey := &AuthKey{}
-
-	err = dsClient.Get(ctx, k, authKey)
-	if err != nil {
-		log.Fatalf("Failed to get authentication clientKey: %v", err)
-	}
-
-	if strings.TrimSpace(authKey.AuthKey) == strings.TrimSpace(clientKey) {
+	if clientKey == authRefernceID {
 		a.isAuthenticated = true
 		return nil
 	}
