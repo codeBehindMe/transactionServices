@@ -26,6 +26,7 @@ package authentication
 import (
 	"cloud.google.com/go/datastore"
 	"errors"
+	"strings"
 )
 
 const HeaderKey = "Authorization"
@@ -53,7 +54,7 @@ func datastoreKey(id int64) *datastore.Key {
 
 func (a *Authenticator) Authenticate(clientKey string) error {
 
-	if clientKey == authRefernceID {
+	if strings.TrimSpace(clientKey) == authRefernceID {
 		a.isAuthenticated = true
 		return nil
 	}
