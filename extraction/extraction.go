@@ -110,7 +110,9 @@ func CreateTransactionFromAnalyseEntitiesResponse(
 	tx.TxNotifyUnixEpoch = time.Now().Unix()
 	tx.TransactionVersion = transaction.Version
 
-	return tx
+	txFromCon := transaction.New(tx.Location,tx.Amount)
+
+	return txFromCon
 }
 
 func GetTransactionFromFromHttpRequest(r *http.Request) transaction.Transaction {
